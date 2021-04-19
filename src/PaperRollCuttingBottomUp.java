@@ -1,9 +1,14 @@
-import java.util.Arrays;
-
 public class PaperRollCuttingBottomUp {
 
     void bottomUpCut(double[] rollPieces, int rollLength){
 
+        if (rollLength > rollPieces.length || rollLength < 1) {
+            System.out.println("\u001B[31m" + """
+                    Error: given length is incorrect.
+                    (Check if the length is greater than the array or smaller than 1)
+                    """ + "\u001B[0m");
+            return;
+        }
         // Array to memorize dynamically the sub-problems
         double[] subRolls = new double[rollLength+1];
         int[] firstCut = new int[rollLength+1];
@@ -47,7 +52,8 @@ public class PaperRollCuttingBottomUp {
             System.out.printf("%6.1f", subRolls[i+1]);
         }
 
-        //Printing the best prices possible
+        // Printing the 1st rod to cut to achieve that best price
+        // Which gives us the remaining rod and the next possible value to cut
         System.out.printf("\n|%-7s|", "1st Cut");
         for (int i = 0; i < rollLength; i++) {
             System.out.printf("%6d", firstCut[i+1]);

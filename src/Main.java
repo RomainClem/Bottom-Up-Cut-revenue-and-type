@@ -16,7 +16,7 @@ public class Main {
 
         // Assignment example
         System.out.println("Example 1: Paper Roll Cutting\n------------------------------");
-        bestSolution.bottomUpCut(rollPieces, rollPieces.length);
+        bestSolution.bottomUpCut(rollPieces, 0);
 
         // Lecture example
         System.out.println("Example 2: Rod Cutting Problem\n------------------------------");
