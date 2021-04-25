@@ -5,16 +5,14 @@ public class PaperRollCuttingBottomUp {
     static final String YELLOW = "\u001B[33m";
 
 
-
-
     void bottomUpCut(double[] rollPieces, int rollLength){
 
         // Checking if given length is incorrect and stopping the completion by using return
-        if (rollLength > rollPieces.length || rollLength < 1) {
+        if (rollLength < 0) {
             System.out.println(RED + """
-                    Error: given length is incorrect.
-                    (Check if the length is greater than the array or smaller than 1)
-                    """ + RESET);
+                            Error: given length is incorrect.
+                            (Check if the length is greater than 0)
+                            """ + RESET);
             return;
         }
 
@@ -33,6 +31,8 @@ public class PaperRollCuttingBottomUp {
 
             // For each sub value - checking if it's higher
             for (int j = 0; j < i; j++){
+                // If we reached the end of our given prices, stop looping
+                if(j == rollPieces.length) break;
                 // If it's higher than the previous highest value, replace it with the new value
                 // Update the first cut needed to reach that value
                 if (maxRollValue < rollPieces[j] + subRolls[i-j-1]){
@@ -49,7 +49,7 @@ public class PaperRollCuttingBottomUp {
         printInfo(rollPieces, rollLength, subRolls, firstCut);
 
         // Printing the best cuts
-        printBestCuts(rollLength, firstCut);
+        printBestCuts(rollLength, firstCut, rollPieces.length);
 
     }
 
@@ -63,7 +63,8 @@ public class PaperRollCuttingBottomUp {
         //Printing the prices given
         System.out.printf("\n|%-7s|", "Price");
         for (int i = 0; i < rollLength; i++) {
-            System.out.printf("%6.1f", rollPieces[i]);
+            if (i> rollPieces.length -1) System.out.printf("%6.1f", 0f);
+            else System.out.printf("%6.1f", rollPieces[i]);
         }
 
         //Printing the best prices possible
@@ -80,7 +81,10 @@ public class PaperRollCuttingBottomUp {
         }
     }
 
-    void printBestCuts(int rollLength,int[] firstCut){
+    void printBestCuts(int rollLength, int[] firstCut, int maxLength){
+        // Array to store the amount of cut per length
+        int[] cutAmounts = new int[maxLength];
+
         // Printing roll cut and their type
         System.out.println("\n\nCut for each rolls/rods:");
 
@@ -91,6 +95,8 @@ public class PaperRollCuttingBottomUp {
             // Starting from the length 1 to n
             int checkRoll = i+1;
             while (checkRoll > 0){
+                // Increment the index
+                cutAmounts[firstCut[checkRoll]-1]++;
                 // We first check the first cut to use, which was the last found
                 System.out.print(firstCut[checkRoll] + " " + YELLOW);
                 // Printing dash to look nice , but could be better or different
@@ -104,6 +110,16 @@ public class PaperRollCuttingBottomUp {
 
                 // If the roll still can't be cut, it will loop and let's print a + to make it nicer
                 if (checkRoll> 0) System.out.print(" + ");
+            }
+            // Spacing
+            System.out.print("\nCuts per length: ");
+            // Displaying counted cut per length
+            // Comment out if it gives too much info
+            for (int j = 0; j < maxLength; j++) {
+                if (cutAmounts[j] > 0) {
+                    System.out.printf("#%d *"+ YELLOW+" %d"+ RESET+" | " , j+1, cutAmounts[j]);
+                    cutAmounts[j] = 0;
+                }
             }
             // Spacing
             System.out.println();
@@ -122,11 +138,15 @@ public class PaperRollCuttingBottomUp {
 
         // Assignment example
         System.out.println("Example 1: Paper Roll Cutting\n------------------------------");
-        bottomUpCut(rollPieces, rollPieces.length);
+        bottomUpCut(rollPieces, 12);
 
         // Lecture example
         System.out.println("\nExample 2: Rod Cutting Problem\n------------------------------");
         bottomUpCut(rodCut, rodCut.length);
+
+        // Error example
+        System.out.println("\nExample 3: Incorrect length\n------------------------------");
+        bottomUpCut(rodCut, 0);
 
         // Random example with a length from 10 to 30
         int randLength = (int) ((Math.random() * (30 - 10)) + 10);
@@ -138,7 +158,7 @@ public class PaperRollCuttingBottomUp {
         for (double i = 1; i <= randLength; i++) randArray[(int)i-1] = Math.random() * ((2*i)-i)+i;
 
         // Printing on screen
-        System.out.println("\nExample 3: Random dynamic values\n--------------------------------");
+        System.out.println("\nExample 4: Random dynamic values\n--------------------------------");
         bottomUpCut(randArray, randArray.length);
     }
 
